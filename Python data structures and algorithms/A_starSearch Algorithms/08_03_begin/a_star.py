@@ -20,7 +20,25 @@ def heuristic(a, b):
 
 
 def a_star(maze, start, goal):
-    pass
+    pq = PriorityQueue()
+    pq.put(start, 0)
+    predecessors = {start: None}
+    g_values = {start: 0}
+
+    while not pq.is_empty():
+        current_cell = pq.get()
+        if current_cell == goal:
+            return get_path(predecessors, start, goal)
+        for direction in ["up", "right", "down", "left"]:
+            row_offset, col_offset = offsets[direction]
+            neighbour = (current_cell[0] + row_offset, current_cell[1] + col_offset)
+            if is_legal_pos(maze, neighbour) and neighbour not in g_values:
+                new_cost = g_values[current_cell] + 1
+                g_values[neighbour] = new_cost
+                f_values = new_cost + heuristic(goal, neighbour)
+                pq.put(neighbour, f_values)
+                predecessors[neighbour] = current_cell
+    return None
 
 
 if __name__ == "__main__":
